@@ -28,22 +28,21 @@ agent_runner_{os_name}_{arch}[.exe]
 
 Binaries are built and published automatically by the [Release Binaries workflow](../.github/workflows/release.yaml) whenever a GitHub release is published.
 
-The workflow runs six parallel jobs — one per OS/arch combination — using GitHub-hosted runners:
+The workflow runs five parallel jobs — one per OS/arch combination — using GitHub-hosted runners:
 
 | OS | Arch | Runner |
 |----|------|--------|
 | Linux | x64 | `ubuntu-latest` |
 | Linux | arm64 | `ubuntu-24.04-arm` |
-| macOS | x64 | `macos-13` (Intel) |
+| macOS | x64 | `macos-14` (Intel) |
 | macOS | arm64 | `macos-latest` (Apple Silicon) |
 | Windows | x64 | `windows-latest` |
 
 Each job:
-1. Installs Python 3.10 and Poetry 1.8.4
-2. Installs project dependencies via `poetry install`
-3. Installs PyInstaller into the Poetry virtualenv
-4. Runs PyInstaller to produce the binary under `dist/`
-5. Uploads the binary to the release as an artifact using `gh release upload`
+1. Installs Python 3.10 and uv (pinned to `0.11.15`)
+2. Resolves and installs the project dependencies (including the `release` dev group, which provides PyInstaller) via `uv sync --all-groups --frozen`
+3. Runs PyInstaller via `uv run pyinstaller …` to produce the binary under `dist/`
+4. Uploads the binary to the release as an artifact using `gh release upload`
 
 To trigger the workflow, [create a new release](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) on GitHub. The binaries will appear as downloadable assets on the release page once all jobs finish.
 
@@ -56,19 +55,16 @@ Follow these steps to produce a binary on your own machine.
 ### Prerequisites
 
 - Python 3.10
-- [Poetry](https://python-poetry.org/docs/#installation) 1.8.4+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
 
 ### Steps
 
 ```bash
-# 1. Install project dependencies
-poetry install --no-interaction --no-root
+# 1. Install project dependencies (including the `release` group with PyInstaller)
+uv sync --all-groups --frozen
 
-# 2. Install PyInstaller
-poetry run pip install pyinstaller
-
-# 3. Build the binary (replace <os_name> and <arch> with your platform values)
-poetry run pyinstaller \
+# 2. Build the binary (replace <os_name> and <arch> with your platform values)
+uv run pyinstaller \
   --onefile \
   --name agent_runner_<os_name>_<arch> \
   langchain_hello_world/main.py
@@ -84,18 +80,16 @@ dist/
 ### Example — Linux x64
 
 ```bash
-poetry install --no-interaction --no-root
-poetry run pip install pyinstaller
-poetry run pyinstaller --onefile --name agent_runner_linux_x64 langchain_hello_world/main.py
+uv sync --all-groups --frozen
+uv run pyinstaller --onefile --name agent_runner_linux_x64 langchain_hello_world/main.py
 ./dist/agent_runner_linux_x64
 ```
 
 ### Example — Windows x64 (PowerShell)
 
 ```powershell
-poetry install --no-interaction --no-root
-poetry run pip install pyinstaller
-poetry run pyinstaller --onefile --name agent_runner_windows_x64 langchain_hello_world/main.py
+uv sync --all-groups --frozen
+uv run pyinstaller --onefile --name agent_runner_windows_x64 langchain_hello_world/main.py
 .\dist\agent_runner_windows_x64.exe
 ```
 

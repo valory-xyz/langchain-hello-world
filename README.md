@@ -26,17 +26,14 @@ This repository contains a basic Langchain agent that interacts with the Tavily 
 Before setting up the environment, ensure you have the following installed:
 
 - **[Python 3.10+](https://www.python.org/)**
-- **[Poetry 1.8.4](https://github.com/python-poetry/poetry)**
+- **[uv](https://docs.astral.sh/uv/getting-started/installation/)**
 
 ### Running the Agent locally without on-chain transactions
 
-1. Create a virtual environment and install the dependencies:
+1. Resolve and install the project dependencies (uv creates the venv under `.venv/` automatically):
 
     ```sh
-    poetry shell
-
-    poetry install
-    
+    uv sync --frozen
     ```
 
 3. Setup the .env file by duplicating the `.env.example` file and renaming it to `.env`.
@@ -53,7 +50,7 @@ Before setting up the environment, ensure you have the following installed:
 4. Start agent execution:
 
    ```sh
-   python langchain_hello_world/main.py
+   uv run python langchain_hello_world/main.py
    ```
 
 
@@ -84,7 +81,7 @@ When executing this agent through Olas Quickstart the safe wallet and agent priv
 6. Start agent execution and you should see some transactions being executed on Tenderly explorer:
 
    ```sh
-   python langchain_hello_world/main.py
+   uv run python langchain_hello_world/main.py
    ```
 
 ## Docker
@@ -121,5 +118,5 @@ Feel free to submit issues or pull requests if you want to improve this reposito
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [Apache License 2.0](LICENSE).
 
