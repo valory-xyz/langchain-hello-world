@@ -16,7 +16,6 @@ jobs:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
         python-version: [ "3.10" ]
-        poetry-version: ["1.8.4"]
 
     defaults:
       run:
@@ -25,22 +24,17 @@ jobs:
     timeout-minutes: 10
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install and configure Poetry
-      uses: snok/install-poetry@v1
+    - uses: astral-sh/setup-uv@v6
       with:
-        version: ${{ matrix.poetry-version }}
-        virtualenvs-create: true
-        virtualenvs-in-project: false
-        virtualenvs-path: ~/my-custom-path
-        installer-parallel: true
-    - name: Check if dependencies can be locked
-      run: poetry lock --check
-    - name: Poetry install requirements and check they can be locked
-      run: poetry install --all-extras --no-interaction -vvv
+        version: "0.11.15"
+    - name: Check the lockfile is in sync with pyproject.toml
+      run: uv lock --check
+    - name: Install dependencies
+      run: uv sync --all-groups --frozen -v
 
   linter_checks:
     continue-on-error: False
@@ -54,8 +48,8 @@ jobs:
     timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -66,15 +60,15 @@ jobs:
         sudo npm install -g markdown-spellcheck
 
     - name: Security checks
-      run: tomte check-security       
+      run: tomte check-security
     - name: Check spelling
       run: tomte check-spelling
-          
+
   scan:
     name: gitleaks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - run: |

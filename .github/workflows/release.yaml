@@ -45,24 +45,23 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install and configure Poetry
-        uses: snok/install-poetry@v1
+      - uses: astral-sh/setup-uv@v6
         with:
-          version: "1.8.4"
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-          installer-parallel: true
+          version: "0.11.15"
 
       - name: Install dependencies
-        run: poetry install --no-interaction --no-root
-
-      - name: Install PyInstaller
-        run: poetry run pip install pyinstaller
+        run: uv sync --all-groups --frozen
 
       - name: Build binary
+        # --paths . lets PyInstaller's import analyzer find the
+        # `langchain_hello_world` package from the repo root; without
+        # it, `from langchain_hello_world.X import Y` in main.py is
+        # only recognized as a hidden import and the built binary
+        # crashes at runtime with ModuleNotFoundError.
         run: |
-          poetry run pyinstaller \
+          uv run pyinstaller \
             --onefile \
+            --paths . \
             --name agent_runner_${{ matrix.os_name }}_${{ matrix.arch }} \
             langchain_hello_world/main.py
 

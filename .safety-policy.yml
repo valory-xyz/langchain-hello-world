@@ -1,0 +1,24 @@
+# Safety policy file. Required by safety 3.x (loaded automatically when
+# present in the working directory). Add vulnerability IDs to ignore
+# under `ignore-vulnerabilities` with a `reason:` string.
+#
+# Carried over defensively from the prior tox.ini's
+# `safety check -i ...` invocation. With the tomte[safety]==0.6.2
+# dep set in this repo's tox.ini, none of these IDs currently fire,
+# but keeping them documented means a future safety DB bump can't
+# unexpectedly turn a previously-acknowledged finding into red CI.
+security:
+  ignore-vulnerabilities:
+    37524: {reason: "legacy carryover from -i flag"}
+    38038: {reason: "legacy carryover from -i flag"}
+    37776: {reason: "legacy carryover from -i flag"}
+    38039: {reason: "legacy carryover from -i flag"}
+    39621: {reason: "legacy carryover from -i flag"}
+    40291: {reason: "legacy carryover from -i flag"}
+    39706: {reason: "legacy carryover from -i flag"}
+    41002: {reason: "legacy carryover from -i flag"}
+    51358: {reason: "legacy carryover from -i flag"}
+    51499: {reason: "legacy carryover from -i flag"}
+    67599: {reason: "legacy carryover from -i flag"}
+    70612: {reason: "legacy carryover from -i flag"}
+  continue-on-vulnerability-error: False
