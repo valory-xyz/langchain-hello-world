@@ -1,0 +1,6 @@
+# Safety policy file. Required by safety 3.x (loaded automatically when
+# present in the working directory). Add vulnerability IDs to ignore
+# under `ignore-vulnerabilities` with a `reason:` string.
+security:
+  ignore-vulnerabilities: {}
+  continue-on-vulnerability-error: False
