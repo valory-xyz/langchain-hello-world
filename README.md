@@ -50,7 +50,7 @@ Before setting up the environment, ensure you have the following installed:
 4. Start agent execution:
 
    ```sh
-   uv run python langchain_hello_world/main.py
+   uv run python -m langchain_hello_world.main
    ```
 
 
@@ -81,7 +81,7 @@ When executing this agent through Olas Quickstart the safe wallet and agent priv
 6. Start agent execution and you should see some transactions being executed on Tenderly explorer:
 
    ```sh
-   uv run python langchain_hello_world/main.py
+   uv run python -m langchain_hello_world.main
    ```
 
 ## Docker

@@ -53,9 +53,15 @@ jobs:
         run: uv sync --all-groups --frozen
 
       - name: Build binary
+        # --paths . lets PyInstaller's import analyzer find the
+        # `langchain_hello_world` package from the repo root; without
+        # it, `from langchain_hello_world.X import Y` in main.py is
+        # only recognized as a hidden import and the built binary
+        # crashes at runtime with ModuleNotFoundError.
         run: |
           uv run pyinstaller \
             --onefile \
+            --paths . \
             --name agent_runner_${{ matrix.os_name }}_${{ matrix.arch }} \
             langchain_hello_world/main.py
 

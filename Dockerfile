@@ -7,19 +7,23 @@ ENV UV_LINK_MODE=copy \
 
 WORKDIR /langchain_hello_world
 
-# Project metadata + lockfile first so the install layer caches when
-# only source changes.
+# Install uv first so the install layer is reused across builds.
+# UV_INSTALL_DIR sets the binary's destination directly — avoids
+# hard-coding the installer's /root/.local/bin path (which only
+# happens to be correct because the image runs as root).
+RUN curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/usr/local/bin sh \
+    && uv --version
+
+# Project metadata + lockfile first so the dep-install layer is reused
+# whenever only application source changes. --no-default-groups skips
+# the `release` dev group (pyinstaller) that only the binary-build
+# workflow needs.
 COPY pyproject.toml uv.lock README.md ./
+RUN uv sync --frozen --no-default-groups
+
+# Application source last so source-only edits don't bust the dep cache.
 COPY start.sh start.sh
 COPY langchain_hello_world/ langchain_hello_world/
-
-# Install uv, then resolve the runtime deps from the committed lock.
-# --no-default-groups skips the `release` dev group (pyinstaller) that
-# only the binary-build workflow needs.
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
-    && mv /root/.local/bin/uv /usr/local/bin/uv \
-    && uv --version \
-    && uv sync --frozen --no-default-groups
 
 RUN chmod +x start.sh
 

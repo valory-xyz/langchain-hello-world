@@ -63,9 +63,13 @@ Follow these steps to produce a binary on your own machine.
 # 1. Install project dependencies (including the `release` group with PyInstaller)
 uv sync --all-groups --frozen
 
-# 2. Build the binary (replace <os_name> and <arch> with your platform values)
+# 2. Build the binary (replace <os_name> and <arch> with your platform values).
+# `--paths .` lets PyInstaller's analyzer see the `langchain_hello_world`
+# package from the repo root so the package import in `main.py` resolves;
+# without it the binary crashes at runtime with ModuleNotFoundError.
 uv run pyinstaller \
   --onefile \
+  --paths . \
   --name agent_runner_<os_name>_<arch> \
   langchain_hello_world/main.py
 ```
@@ -81,7 +85,7 @@ dist/
 
 ```bash
 uv sync --all-groups --frozen
-uv run pyinstaller --onefile --name agent_runner_linux_x64 langchain_hello_world/main.py
+uv run pyinstaller --onefile --paths . --name agent_runner_linux_x64 langchain_hello_world/main.py
 ./dist/agent_runner_linux_x64
 ```
 
@@ -89,7 +93,7 @@ uv run pyinstaller --onefile --name agent_runner_linux_x64 langchain_hello_world
 
 ```powershell
 uv sync --all-groups --frozen
-uv run pyinstaller --onefile --name agent_runner_windows_x64 langchain_hello_world/main.py
+uv run pyinstaller --onefile --paths . --name agent_runner_windows_x64 langchain_hello_world/main.py
 .\dist\agent_runner_windows_x64.exe
 ```
 
