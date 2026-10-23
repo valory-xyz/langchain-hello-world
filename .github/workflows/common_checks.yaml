@@ -30,7 +30,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - uses: astral-sh/setup-uv@v6
       with:
-        version: "0.11.15"
+        version: "0.13.4"
     - name: Check the lockfile is in sync with pyproject.toml
       run: uv lock --check
     - name: Install dependencies
