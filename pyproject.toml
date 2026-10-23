@@ -1,6 +1,6 @@
 [project]
 name = "langchain-hello-world"
-version = "0.1.0"
+version = "0.1.1"
 description = "LangGraph agent demo with a Safe-based transaction executor."
 authors = [{ name = "Naiane Rosa", email = "naiane.rosa@valory.xyz" }]
 requires-python = ">=3.10,<4.0"
